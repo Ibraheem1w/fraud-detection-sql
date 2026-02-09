@@ -13,7 +13,7 @@ fraud teams often begin investigations using rule-based logic.
 - Source: PaySim (synthetic mobile money transaction data)
 - Rows used: ~2.56 million transactions
 - Transaction types: PAYMENT, TRANSFER, CASH_OUT, DEBIT
-- Fraud rate: ~0.13%
+- Fraud rate: ~0.09%
 
 Each record includes sender and receiver balances before and after the transaction,
 enabling balance-consistency analysis.
