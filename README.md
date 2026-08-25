@@ -25,6 +25,12 @@ enabling balance-consistency analysis.
 - Transactions that drain the sender balance to zero show elevated fraud risk
 - System-flagged fraud misses a large portion of confirmed fraud cases
 ---
+## Dashboard
+Built a Tableau dashboard on top of the SQL analysis fraud rate by transaction type, a balance reconciliation finding that flips  the intuitive assumption, and a scatter plot showing the account drain pattern fraud follows.
+Dashboard on Tableau Public link. https://public.tableau.com/app/profile/ibraheem.a1570/viz/Fraud_Detection_17876652679100/Dashboard1 
+Fraudulent transactions almost always show a fully reconciled balance sender's account drains to exactly zero. Legitimate transactions are actually more likely to show a balance mismatch. that's the opposite of what I expected going in.
+
+---
 
 ## Technical Approach
 - Large-scale SQL aggregation and filtering
