@@ -1,40 +1,37 @@
-# Financial Fraud Detection Analysis (SQL)
+# Fraud Detection SQL
 
-## Overview
-This project analyzes ~2.5 million financial transactions to identify fraud patterns using SQL. The goal is to explore how transaction types, balance behavior, and rule-based indicators can be used to surface high-risk activity in large datasets.
+SQL analysis of the PaySim dataset, with a Tableau dashboard. PaySim is a simulated set of mobile money transactions with a fraud label on each row. The question is which transactions are fraud and what their balances look like.
 
-All analysis is performed in MySQL without machine learning, reflecting how fraud teams often begin investigations using rule-based logic.
+## Data
 
-## Dataset
-- Source: PaySim (synthetic mobile money transaction data)
-- Rows used: ~2.56 million transactions
-- Transaction types: PAYMENT, TRANSFER, CASH_OUT, DEBIT
-- Fraud rate: ~0.09%
+2,563,479 transactions from the PaySim dataset on Kaggle, loaded into MySQL. Each row has the transaction type, the amount, the sender balance before and after, and a fraud label.
 
-Each record includes sender and receiver balances before and after the transaction, enabling balance-consistency analysis.
+## Findings
 
-## Key Findings
-- Fraud is almost entirely concentrated in TRANSFER and CASH_OUT transactions.
-- Fraudulent transactions are more likely to show a fully reconciled balance, with the sender's account draining to exactly zero. Legitimate transactions are actually more likely to show a balance mismatch. This is the opposite of what I expected going in.
-- System-flagged fraud (`isFlaggedFraud`) misses a large portion of confirmed fraud cases.
+Overall, 2,302 transactions are labeled fraud, a rate of 0.09%.
+
+Fraud only happens in two types. TRANSFER has 1,143 fraud cases out of 212,634 (0.54%) and CASH_OUT has 1,159 out of 913,739 (0.13%). PAYMENT, DEBIT, and CASH_IN have none.
+
+The built in isFlaggedFraud column did not catch any of the actual fraud.
+
+Fraud tends to empty the sender account. In the sample used for the scatter plot, 147 of the 157 fraud cases left the sender with a zero balance.
+
+The balance check compares the sender balance change to the amount. Among rows where the balance changed by exactly the amount, 2,276 were fraud out of 560,625 (0.41%). Among rows where it did not, 26 were fraud out of 2,002,854 (0.0013%). Fraud sits almost entirely in rows where the balance math adds up.
 
 ## Dashboard
-Built a Tableau dashboard on top of the SQL analysis. It includes fraud rate by transaction type, the balance reconciliation finding described above, and a scatter plot showing the account drain pattern fraud follows.
 
-Dashboard: https://public.tableau.com/app/profile/ibraheem.a1570/viz/Fraud_Detection_17876652679100/Dashboard1
+The Tableau dashboard (Fraud_Detection.twbx) has a fraud rate by type chart, a scatter plot of sender balance before and after, and the reconciled versus mismatched comparison. Each chart is built from one query in fraud_analysis.sql.
 
-## Technical Approach
-- Large-scale SQL aggregation and filtering
-- Balance reconciliation checks using conditional logic
-- Behavioral analysis by sender and time step
-- A rule-based risk score combining transaction type, amount, balance mismatch, and zero-out behavior, used to rank transactions for manual review in the absence of a machine learning model. Note: the balance-mismatch component currently flags mismatches as a risk factor, which runs counter to the reconciliation finding above, an area for future refinement.
+## Running it
 
-The final output ranks transactions by risk score to surface the most suspicious activity.
+Load the PaySim CSV into a MySQL table called transactions in a database called fraud_analysis, then run fraud_analysis.sql. Part 1 of the file builds the three datasets used in the dashboard. Part 2 has extra checks.
 
-## Files
-- 'Fraud_Detection.sql` – Full exploratory analysis, fraud pattern queries, and risk scoring logic
+## Limits
 
-## Tools
-- MySQL
-- MySQL Workbench
-- SQL (CASE statements, aggregation, filtering)
+PaySim is simulated, and its balances often do not add up. These patterns may not hold on real bank data.
+
+The balance check assumes money leaves the sender account. CASH_IN adds money, so nearly every CASH_IN row is counted as mismatched. That puts about 565,000 normal transactions in the mismatched group and makes the gap look bigger than it is. Fraud is still concentrated in the reconciled group.
+
+The scatter plot uses the first 100,000 transfers and cash outs in table order, which includes 157 of the 2,302 fraud cases. It is not a random sample.
+
+The fraud labels come with the dataset. The queries describe fraud, they do not detect it.
