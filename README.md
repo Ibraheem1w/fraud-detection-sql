@@ -18,6 +18,8 @@ Fraud tends to empty the sender account. In the sample used for the scatter plot
 
 The balance check compares the sender balance change to the amount. Among rows where the balance changed by exactly the amount, 2,276 were fraud out of 560,625 (0.41%). Among rows where it did not, 26 were fraud out of 2,002,854 (0.0013%). Fraud sits almost entirely in rows where the balance math adds up.
 
+The risk score in Part 2 gives one point for each rule: TRANSFER or CASH_OUT, an amount of 200,000 or more, a balance that adds up, and a sender left at zero. A score of 3 or more catches 2,276 of the 2,302 fraud cases (98.9%), but it also flags 271,289 normal transactions, so less than 1% of flagged rows are fraud. A score of 4 catches 1,462 fraud cases (63.5%) and flags nothing else. The rules were picked on this same data, so these numbers are in sample.
+
 ## Dashboard
 
 Dashboard 1.png is a screenshot of the Tableau dashboard. It has a fraud rate by type chart, a scatter plot of sender balance before and after, and the reconciled versus mismatched comparison. Each chart is built from one query in Fraud_Analysis.sql.
@@ -30,7 +32,7 @@ Load the PaySim CSV into a MySQL table called transactions in a database called 
 
 PaySim is simulated, and its balances often do not add up. These patterns may not hold on real bank data.
 
-The balance check assumes money leaves the sender account. CASH_IN adds money, so nearly every CASH_IN row is counted as mismatched. That puts about 565,000 normal transactions in the mismatched group and makes the gap look bigger than it is. Fraud is still concentrated in the reconciled group.
+The balance check assumes money leaves the sender account. CASH_IN adds money, so nearly every CASH_IN row is counted as mismatched. That puts about 565,000 normal transactions in the mismatched group and makes the gap look bigger than it is. With cash in handled correctly (the corrected check in Part 2), 2,276 of 1,125,346 rows that add up are fraud (0.20%), against 26 of 1,438,133 that do not (0.0018%). Fraud is still concentrated in the reconciled group.
 
 The scatter plot uses the first 100,000 transfers and cash outs in table order, which includes 157 of the 2,302 fraud cases. It is not a random sample.
 
