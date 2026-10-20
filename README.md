@@ -20,11 +20,11 @@ The balance check compares the sender balance change to the amount. Among rows w
 
 ## Dashboard
 
-The Tableau dashboard (Fraud_Detection.twbx) has a fraud rate by type chart, a scatter plot of sender balance before and after, and the reconciled versus mismatched comparison. Each chart is built from one query in fraud_analysis.sql.
+Dashboard 1.png is a screenshot of the Tableau dashboard. It has a fraud rate by type chart, a scatter plot of sender balance before and after, and the reconciled versus mismatched comparison. Each chart is built from one query in Fraud_Analysis.sql.
 
 ## Running it
 
-Load the PaySim CSV into a MySQL table called transactions in a database called fraud_analysis, then run fraud_analysis.sql. Part 1 of the file builds the three datasets used in the dashboard. Part 2 has extra checks.
+Load the PaySim CSV into a MySQL table called transactions in a database called fraud_analysis, then run Fraud_Analysis.sql. Part 1 of the file builds the three datasets used in the dashboard. Part 2 has extra checks.
 
 ## Limits
 

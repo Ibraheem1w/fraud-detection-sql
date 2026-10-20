@@ -94,6 +94,7 @@ LIMIT 50;
 
 -- risk score: how much fraud each score level catches
 -- the rules were picked by looking at this same data, so this is in sample
+-- a balance that adds up counts as risk, because that is where the fraud is in this data
 SELECT
   risk_score,
   COUNT(*) AS txns,
@@ -106,7 +107,7 @@ FROM (
   + (CASE WHEN amount >= 200000 THEN 1 ELSE 0 END)
   + (CASE WHEN ABS(oldbalanceOrg
         + (CASE WHEN type = 'CASH_IN' THEN amount ELSE -amount END)
-        - newbalanceOrig) > 1 THEN 1 ELSE 0 END)
+        - newbalanceOrig) <= 1 THEN 1 ELSE 0 END)
   + (CASE WHEN oldbalanceOrg > 0 AND newbalanceOrig = 0 THEN 1 ELSE 0 END) AS risk_score
   FROM transactions
 ) s
